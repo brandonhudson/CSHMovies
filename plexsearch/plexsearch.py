@@ -23,6 +23,7 @@ def return_movie_db():
 
     db_conn = None
     for server in servers:
+        print("Connecting to: " + server.name)
         try:
             instance = server.connect()
 
@@ -35,6 +36,7 @@ def return_movie_db():
                         "server": unicode(instance.friendlyName).encode('utf-8')
                         })
         except Exception:
+            print("Couldn't connect to: " + server.name)
 
     return movie_data
 
@@ -67,6 +69,17 @@ def create_database():
     query_2(c, '''create table movieList
 (rowid INT NOT NULL AUTO_INCREMENT PRIMARY KEY, title text, summary text, art
 text, server text)''')
+
+    db_conn.commit()
+
+    c.close()
+
+def clear_database():
+    global db_conn
+    db_conn = connect_db()
+    c = db_conn.cursor()
+
+    query_2(c, '''drop table movieList''')
 
     db_conn.commit()
 
