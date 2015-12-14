@@ -218,3 +218,11 @@ body{
 .container{
     width:100%;
 }
+
+.resultsContainer {
+    display:block;
+}
+
+.searchContainer {
+
+}

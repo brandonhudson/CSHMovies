@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
@@ -30,17 +30,66 @@
     <![endif]-->
   </head>
 
-  <body OnLoad="document.search.searchinput.focus();">
-    <div class="container search-container">
+  <body OnLoad="document.search.searchinput.focus();" ng-controller="search-controller">
+      
+      
+      
+    <div class="container resultsContainer" style="display:none">
+            <div style="padding-top:50px;"></div>
+            <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+        <!-- add header -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar1">
+                <span class="sr-only">Toggle navigation</span>
+                <i class="fa fa-bars" style="font-size:25px; padding:0px; margin:0px;"></i>
+            </button>
+            <a class="navbar-brand" href="#"><i class="fa fa-youtube-play" style="color:#FFF"></i></a>
+        </div>
+        <!-- add menu -->
+        <div class="collapse navbar-collapse" id="navbar1">
+
+            <!-- add search form -->
+            <form role="search">
+                <div class="input-group nav-search-container">
+                    <input type="text" class="form-control nav-search-input" name="searchinput" placeholder="Search for..." ng-model="userQuery">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default search-btn" type="button" ng-click="search(userQuery)">Go</button>
+                    </span>
+                </div>
+            </form>
+        </div>
+    </div>
+</nav>
+        
+        
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <div class="media">
+                <div class="media-left">
+                    <a href="#">
+                        <img class="media-object movie-poster" src="resources/images/poster.jpg" alt="...">
+                    </a>
+                </div>
+                <div class="media-body">
+                    <div class="movie-title">Media heading</div>
+                    <p class="username">hudson</p>
+                    <p class="description">After escaping with Newt and Hicks from the alien planet, Ripley crash lands on Fiorina 161, a prison planet and host to a correctional facility. Unfortunately, although Newt and Hicks do not survive the crash, a more unwelcome visitor does. The p      rison does not allow weapons of any kind, and with aid being a long time away, the prisoners must simply survive in any way they can.</p>
+                </div>
+            </div>
+        </div>
+      </div>
+      
+    <div class="container search-container searchContainer">
+            
         <div class="search-bar">
             <div class="logo">
                 <i class="fa fa-youtube-play"></i> Movies
             </div>
             <form name="search">
                 <div class="input-group">
-                    <input type="text" class="form-control search-input" name="searchinput" placeholder="Search for..." >
+                    <input type="text" ng-model="userQuery" class="form-control search-input" name="searchinput" placeholder="Search for..." >
                     <span class="input-group-btn">
-                        <button class="btn btn-default search-btn" type="button">Go</button>
+                        <button class="btn btn-default search-btn" type="button" ng-click="search(userQuery)">Go</button>
                     </span>
                 </div>
             </form>
@@ -69,9 +118,8 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
-    <script src="../../dist/js/bootstrap.min.js"></script>
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+    <script src="resources/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+      <script src="resources/app/app.js"></script>
   </body>
 </html>
