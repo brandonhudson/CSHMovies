@@ -6,6 +6,7 @@ import json
 import sys
 import MySQLdb as mdb
 
+db_conn = None
 json_config = None
 with open(sys.argv[1]) as data_file:
     json_config = json.load(data_file)
@@ -22,20 +23,18 @@ def return_movie_db():
 
     db_conn = None
     for server in servers:
-        print("Connecting to: " + server.name)
         try:
             instance = server.connect()
 
             for section in instance.library.sections():
                 for movie in section.all():
                     movie_data.append({
-                        "title": movie.title,
-                        "summary": movie.summary,
-                        "art": movie.art,
-                        "server": server.name
+                        "title": unicode(movie.title).encode('utf-8'),
+                        "summary": unicode(movie.summary).encode('utf-8'),
+                        "art": unicode(movie.art).encode('utf-8'),
+                        "server": unicode(instance.friendlyName).encode('utf-8')
                         })
         except Exception:
-            print("Cannot connect to: " + server.name)
 
     return movie_data
 
@@ -61,6 +60,7 @@ def query_3(cursor, sql, params):
         cursor.execute(sql, params)
 
 def create_database():
+    global db_conn
     db_conn = connect_db()
     c = db_conn.cursor()
 
@@ -73,6 +73,7 @@ text, server text)''')
     c.close()
 
 def populate_database():
+    global db_conn
     db_conn = connect_db()
     c = db_conn.cursor()
 
@@ -80,8 +81,8 @@ def populate_database():
 
     for movie in movie_data:
         query_3(c, '''insert into movieList (title, summary, art, server)
-values (%s, %s, %s, %s)''', (movie.title, movie.summary, movie.art,
-            movie.server))
+values (%s, %s, %s, %s)''', (movie['title'], movie['summary'], movie['art'],
+            movie['server']))
 
     db_conn.commit()
     c.close()
