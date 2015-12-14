@@ -62,5 +62,5 @@ target/
 AUTHORS
 ChangeLog
 
-frontend/keys.php
+frontend/resources/api/keys.php
 
