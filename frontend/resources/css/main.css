@@ -37,6 +37,8 @@
     }
     .movie-poster{
         width:70px;
+        height:106;
+        background:#EEE;
         margin-right:5px;
         margin-top:10px;
         margin-bottom:10px;
@@ -58,6 +60,11 @@
     .mobile-hide{
         display:none;
     }
+    .result-label {
+        font-size:10px;
+        position:relative;
+        top:-5px;
+    }
     
 }
 @media(min-width:768px){
@@ -67,6 +74,11 @@
         margin:auto;
         margin-top:150px;
         margin-bottom:30px;
+    }
+    .result-label {
+        font-size:12px;
+        position:relative;
+        top:-5px;
     }
     .logo{
         width:100%;
@@ -89,6 +101,8 @@
     }
     .movie-poster{
         width:100px;
+        height:152px;
+        background:#EEE;
         margin-right:10px;
         margin-top:15px;
         margin-bottom:15px;
@@ -226,3 +240,9 @@ body{
 .searchContainer {
 
 }
+
+.no-results-message {
+    padding-left:30px;
+}
+
+

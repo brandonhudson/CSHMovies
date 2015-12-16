@@ -3,24 +3,43 @@ function switchView(){
     $('.searchContainer').hide();
     
 }
+function returnNormalView(){
+    $('.resultsContainer').hide();
+    $('.searchContainer').show();
+    
+}
 
 
 //KEEP WORKING ON THIS!!
 
-var app = angular.module('CSHMovie', []);
+var app = angular.module('CSHMovies', []);
 
-app.controller('searchController', function($window,$scope,$http,$location) {
-    $scope.search = function(query){
+app.controller('searchController', function($scope,$http,$sce) {
+    $scope.returnNormalView = function(){
+        $scope.userQuery = "";
+        returnNormalView();
+        
+    }
+    $scope.stream = function(url){
+        console.log("STREAM CALLED: "+url); //debug
+        $scope.activeVideo = $sce.trustAsResourceUrl(url);
+        
+        
+    }
+    $scope.searchMovie = function(){
+        
+        var query = $scope.userQuery;
+        $scope.lastSearch = $scope.userQuery;
         console.log(query); //debug
-        $http.get('resources/api/api.php?q='+query)
+        $http.get('resources/api/api.php?query='+query)
         .success(function(data, status, headers, config) {
             switchView();
             console.log(data) //debug
             $scope.data = data;
             
         })
-        .error(function(data, status, headers, config) {   
-            alert('ERROR - 500 - Cannot Get Services.');
+        .error(function(data, status, headers, config) {             console.log(data); //debug
+            //alert("ERROR: "+status); //debug
             // called asynchronously if an error occurs
             // or server returns response with an error status.
         });
