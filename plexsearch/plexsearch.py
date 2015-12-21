@@ -2,6 +2,7 @@ from __future__ import print_function
 from plexapi.server import PlexServer
 from plexapi.myplex import MyPlexUser
 from plexapi.exceptions import NotFound
+import plexapi.video
 import json
 import sys
 import MySQLdb as mdb
@@ -23,20 +24,28 @@ def return_movie_db():
 
     db_conn = None
     for server in servers:
-        print("Connecting to: " + server.name)
+        print("Connecting to: " + unicode(server.name).encode('utf-8'))
         try:
             instance = server.connect()
 
             for section in instance.library.sections():
                 for movie in section.all():
+                    link = None
+                    if type(movie) is plexapi.video.Movie:
+                        link = unicode(movie.getStreamUrl()).encode('utf-8')
+                    else:
+                        link = ""
+
                     movie_data.append({
                         "title": unicode(movie.title).encode('utf-8'),
                         "summary": unicode(movie.summary).encode('utf-8'),
-                        "art": unicode(movie.art).encode('utf-8'),
-                        "server": unicode(instance.friendlyName).encode('utf-8')
+                        "art": instance.url(unicode(movie.art).encode('utf-8')),
+                        "server":unicode(instance.friendlyName).encode('utf-8'),
+                        "type": unicode(type(movie)).encode('utf-8'),
+                        "link": link
                         })
         except Exception:
-            print("Couldn't connect to: " + server.name)
+            print("Couldn't connect to: " + unicode(server.name).encode('utf-8'))
 
     return movie_data
 
@@ -68,7 +77,11 @@ def create_database():
 
     query_2(c, '''create table movieList
 (rowid INT NOT NULL AUTO_INCREMENT PRIMARY KEY, title text, summary text, art
-text, server text)''')
+text, server text, type text, link text)''')
+
+    query_2(c, '''ALTER TABLE movieList ENGINE = MYISAM''')
+
+    query_2(c, '''ALTER TABLE movieList ADD FULLTEXT(title)''')
 
     db_conn.commit()
 
@@ -93,12 +106,15 @@ def populate_database():
     movie_data = return_movie_db()
 
     for movie in movie_data:
-        query_3(c, '''insert into movieList (title, summary, art, server)
-values (%s, %s, %s, %s)''', (movie['title'], movie['summary'], movie['art'],
-            movie['server']))
+        query_3(c, '''insert into movieList (title, summary, art, server, type,
+link)
+values (%s, %s, %s, %s, %s, %s)''', (movie['title'], movie['summary'],
+            movie['art'], movie['server'], movie['type'], movie['link']))
 
     db_conn.commit()
     c.close()
+
+    print("Completed Upload Successfully")
 
 def main():
     print(json.dumps(return_movie_db(), indent=4), file=sys.stderr)
