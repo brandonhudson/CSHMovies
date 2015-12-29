@@ -46,4 +46,17 @@ app.controller('searchController', function($scope,$http,$sce) {
         
     }
     
+    $scope.location = function(){
+        console.log("test of location function"); //debug
+        if ((window.innerWidth < 768))  {
+            newUrl='plexapp://';
+            
+        }
+        else{
+            newUrl='http://app.plex.tv/web/app/';
+        }
+        document.location.href = newUrl;
+        
+    }
+    
 });
