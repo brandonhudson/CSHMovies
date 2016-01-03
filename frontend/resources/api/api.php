@@ -34,37 +34,52 @@ if($result->num_rows > 0) {
         $title = $tempRow['title'];
         $type = $tempRow['type'];
         $counter = 0;
-        if($type == "<class 'plexapi.video.Show'>"){
-            $tvShows = $tmdb->searchTVShow($title);
-            foreach($tvShows as $tvShow){
-                if($counter == 1){
-                    break;
-                }
-                $art = $tvShow->getPoster();
-                $counter++;
+        $inArray = false;
+        // Check to see if already in array
+        for ($i = 0; $i < count($arr); ++$i) {
+            if($arr[$i]['title'] == $title){
+                $arr[$i]['server'] = $arr[$i]['server'].", ".$tempRow['server'];
+                $inArray = true;
+                break;
             }
-            
         }
-        else{
-            $movies = $tmdb->searchMovie($title);
-            // returns an array of Movie Object
+
         
-            foreach($movies as $movie){
-                if($counter == 1){
-                    break;
+        if(!$inArray){
+        
+        
+            if($type == "<class 'plexapi.video.Show'>"){
+                $tvShows = $tmdb->searchTVShow($title);
+                foreach($tvShows as $tvShow){
+                    if($counter == 1){
+                        break;
+                    }
+                    $art = $tvShow->getPoster();
+                    $counter++;
                 }
-                $art = $movie->getPoster( );
-                $counter++;
-            }     
-        }
-        
-        
-        if($art != NULL){
-            $tempRow['art'] = $imageBaseURL.$art;
-            
-        }
-		$arr[] = $tempRow;	
-	}
+
+            }
+            else{
+                $movies = $tmdb->searchMovie($title);
+                // returns an array of Movie Object
+
+                foreach($movies as $movie){
+                    if($counter == 1){
+                        break;
+                    }
+                    $art = $movie->getPoster( );
+                    $counter++;
+                }     
+            }
+
+
+            if($art != NULL){
+                $tempRow['art'] = $imageBaseURL.$art;
+
+            }
+            $arr[] = $tempRow;	
+	   }
+    }
 }
 # JSON-encode the response
 $json_response = json_encode($arr);
