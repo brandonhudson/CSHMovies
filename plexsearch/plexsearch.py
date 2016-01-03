@@ -84,9 +84,14 @@ class PlexSearch:
         :return: SQLAlchemy Database Engine
         """
         try:
-            engine = create_engine(
-                "{}://{}:{}@{}/{}?charset=utf8".format(self.db_driver, self.db_user, self.db_password, self.db_host,
-                                                       self.db_name))
+            engine = create_engine(URL(
+                drivername=self.db_driver,
+                username=self.db_user,
+                password=self.db_password,
+                host=self.db_host,
+                database=self.db_name,
+                query={'charset': 'utf8'}
+            ))
 
             # Test the connection
             connection = engine.connect()
