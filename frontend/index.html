@@ -86,7 +86,7 @@
         
     <div ng-if="data.length == 0" class="no-results-message">
         <br>
-            <p>Your search - <strong>{{lastSearch}}</strong> - did not match any documents.</p>
+            <p>Your search - <strong>{{lastSearch}}</strong> - did not match any media.</p>
 
 <p>Suggestions:</p>
 <ul>
@@ -102,20 +102,18 @@
     <div id="results" ng-repeat="movie in data">
 
         
-        <div class="col-xs-12 col-sm-12 col-md-12" data-id="{{movie.rowid}}">
-            <div class="media">
+        <div class="col-xs-12 col-sm-12 col-md-12" data-id="{{movie.id}}">
+            <div class="media" ng-click='location(movie)'> <!-- ng-click="stream(movie.link)"  data-toggle="modal" data-target="#streamModal" -->
                 <div class="media-left">
-                    <a ng-click='location()'> <!-- ng-click="stream(movie.link)"  data-toggle="modal" data-target="#streamModal" -->
-                        <img class="media-object movie-poster" src="{{movie.art}}" alt="...">
-                    </a>
+                    <img class="media-object movie-poster" src="{{movie.art}}" alt="...">
                 </div>
                 <div class="media-body">
                     <div class="movie-title">
                         
                         {{movie.title}}
                         <div style="display:inline-block;" ng-switch="movie.type">
-                            <div ng-switch-when="<class 'plexapi.video.Show'>" class="label label-default result-label">TV Show</div>
-                            <div ng-switch-when="<class 'plexapi.video.Movie'>" class="label label-default result-label">Movie</div>
+                            <div ng-switch-when="show" class="label label-default result-label">TV Show</div>
+                            <div ng-switch-when="movie" class="label label-default result-label">Movie</div>
                             
                         </div>
                     </div>
