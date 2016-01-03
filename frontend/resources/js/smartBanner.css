@@ -1,0 +1,151 @@
+/* Smart Banners for Mobile Devices */
+#SmartBanner{
+	font-family:Arial, Helvetica, sans-serif;
+	color: #000;
+	background-color:#FAFAFA;
+	z-index:1000;
+	position:fixed;
+	left:0;
+	padding-top:5px;
+	padding-right:15px;
+	padding-bottom:5px;
+	width:100%;
+	
+}
+#SBicon{
+	float:left;	
+	width:60px;
+	height:60px;
+	
+}
+#SBtitle{
+	font-size:16px;
+	margin-top:5px;	
+}
+#SBdeveloper{
+	font-size:12px;
+	margin-top:-2px;
+}
+#SBmessage{
+	font-size:12px;
+	margin-top:-2px;
+}
+#SBcloseContainer{
+	position:absolute;
+	top:5px;
+	right:0px;
+}
+#SBcloseIcon{
+	font-size:20px;
+}
+#SBpadding{
+	padding-top:40px;
+	padding-bottom:40px;	
+	
+}
+#SBclose{
+	 outline: 0;
+	 border:0;
+	 background-color: transparent;
+	
+}
+#SBlinkContainer{
+	position: absolute;
+	right:40px;
+	top:20px;
+}
+#SBlinkContainer a{
+	font-size: 20px;
+	font-color: #000;
+	color: #808080;	
+}
+#SBlinkContainer a:hover,
+#SBlinkContainer a:visited,
+#SBlinkContainer a:focus{
+	text-decoration: none;	
+}
+
+/* smartBanner web-app alert */
+#SBAlert{
+	font-family:Arial, Helvetica, sans-serif;
+	position: fixed;
+	z-index:1000;
+	bottom: 75px;
+	padding-top:15px;
+	padding-bottom:15px;
+	padding-left:10px;
+	padding-right:10px;
+	border:2px solid #999;
+	border-radius:7px;
+	background: rgba(255,255,255,0.95);
+	text-align:center;
+}
+@media (max-width:767px){
+#SBAlert{
+	width:50%;
+	left:25%;	
+}
+}
+@media (min-width:768px){
+#SBAlert{
+	width:30%;
+	left:35%;	
+}
+}
+
+/*!
+ *  Font Awesome 4.2.0 by @davegandy - http://fontawesome.io - @fontawesome
+ 	Modified for smartBanner.js
+ 	Modified By: Brandon Hudson
+ *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
+ */
+/* FONT PATH
+ * -------------------------- */
+@font-face {
+  font-family: 'FontAwesome';
+  src: url('SB-fonts/SB-fontawesome-webfont.eot?v=4.2.0');
+  src: url('SB-fonts/SB-fontawesome-webfont.eot?#iefix&v=4.2.0') format('embedded-opentype'), url('SB-fonts/SB-fontawesome-webfont.woff?v=4.2.0') format('woff'), url('SB-fonts/SB-fontawesome-webfont.ttf?v=4.2.0') format('truetype'), url('SB-fonts/SB-fontawesome-webfont.svg?v=4.2.0#fontawesomeregular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+.SB-fa {
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.SB-fa-rotate-270 {
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+  -webkit-transform: rotate(270deg);
+  -ms-transform: rotate(270deg);
+  transform: rotate(270deg);
+}
+:root .SB-fa-rotate-270, {
+  filter: none;
+}
+.fa-inverse {
+  color: #ffffff;
+}
+/* Font Awesome uses the Unicode Private Use Area (PUA) to ensure screen
+   readers do not read off random characters that represent icons */
+.SB-fa-remove:before,
+.SB-fa-close:before,
+.SB-fa-times:before {
+  content: "\f00d";
+}
+
+.SB-fa-share-square-o:before {
+  content: "\f045";
+}
+
+.SB-fa-ellipsis-v:before {
+  content: "\f142";
+}
+.SB-fa-sign-out:before {
+  content: "\f08b";
+}
+.SB-fa-thumb-tack:before {
+  content: "\f08d";
+}
