@@ -46,11 +46,11 @@
         
     }
     .movie-poster-link{
-        transition:all .1s ease-in;
-        -webkit-transition:all .1s ease-in;
-        -moz-transition:all .1s ease-in;
-        -o-transition:all .1s ease-in;
-        -ms-transition:all .1s ease-in;
+        transition: all .2s ease-in;
+        -webkit-transition:all .2s ease-in;
+        -moz-transition:all .2s ease-in;
+        -o-transition:all .2s ease-in;
+        -ms-transition:all .2s ease-in;
         cursor:pointer;
     }
     .movie-poster-link:hover:before {
@@ -64,11 +64,7 @@
         width:70px;
         height:106px;
         pointer-events: none;
-        transition:all .1s ease-in;
-        -webkit-transition:all .1s ease-in;
-        -moz-transition:all .1s ease-in;
-        -o-transition:all .1s ease-in;
-        -ms-transition:all .1s ease-in;
+        
         
     }
     .movie-title{
@@ -141,11 +137,11 @@
         
     }
     .movie-poster-link{
-        transition:all .1s ease-in;
-        -webkit-transition:all .1s ease-in;
-        -moz-transition:all .1s ease-in;
-        -o-transition:all .1s ease-in;
-        -ms-transition:all .1s ease-in;
+        transition: all .2s ease-in;
+        -webkit-transition:all .2s ease-in;
+        -moz-transition:all .2s ease-in;
+        -o-transition:all .2s ease-in;
+        -ms-transition:all .2s ease-in;
         cursor:pointer;
     }
     .movie-poster-link:hover:before {
@@ -159,11 +155,7 @@
         width:100px;
         height:152px;
         pointer-events: none;
-        transition:all .1s ease-in;
-        -webkit-transition:all .1s ease-in;
-        -moz-transition:all .1s ease-in;
-        -o-transition:all .1s ease-in;
-        -ms-transition:all .1s ease-in;
+        
     }
     .movie-title{
         font-size:32px;
