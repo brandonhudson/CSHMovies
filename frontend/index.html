@@ -26,7 +26,7 @@
     
 
 
-    <title>CSH Movies | Search</title>
+    <title>CSH Movies</title>
 
     <!-- Bootstrap core CSS -->
     <link href="resources/css/bootstrap.min.css" rel="stylesheet">
@@ -65,7 +65,7 @@
                 <span class="sr-only">Toggle navigation</span>
                 <i class="fa fa-bars" style="font-size:25px; padding:0px; margin:0px;"></i>
             </button>
-            <a class="navbar-brand" ng-click="returnNormalView()" href="#"><i class="fa fa-youtube-play" style="color:#FFF"></i></a>
+            <a class="navbar-brand" ng-click="returnNormalView()"><i class="fa fa-youtube-play" style="color:#FFF"></i></a>
         </div>
         <!-- add menu -->
         <div class="collapse navbar-collapse" id="navbar1">
@@ -105,7 +105,7 @@
         <div class="col-xs-12 col-sm-12 col-md-12" data-id="{{movie.rowid}}">
             <div class="media">
                 <div class="media-left">
-                    <a href="#" ng-click='location()'> <!-- ng-click="stream(movie.link)"  data-toggle="modal" data-target="#streamModal" -->
+                    <a ng-click='location()'> <!-- ng-click="stream(movie.link)"  data-toggle="modal" data-target="#streamModal" -->
                         <img class="media-object movie-poster" src="{{movie.art}}" alt="...">
                     </a>
                 </div>
@@ -159,7 +159,7 @@
       
       
     <!-- Search Home Page -->  
-    <div class="container search-container searchContainer">
+    <div class="container search-container searchContainer" style="display:none">
             
         <div class="search-bar">
             <div class="logo">
@@ -183,7 +183,7 @@
                 <a href="https://github.com/brandonhudson/CSHMovies" style="color:#999;"><i class="fa fa-github"></i> Find Us on GitHub</a>
             </div>
             <div class="col-xs-12 col-sm-4 col-md-4 footer-container mobile-hide">
-                Version 0.9BETA
+                Version 0.9.1 BETA
             </div>
             <div class="col-xs-12 col-sm-4 col-md-4 footer-container">
                 &copy; 2015 Computer Science House.
