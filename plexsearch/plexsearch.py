@@ -8,20 +8,20 @@ from plexapi.myplex import MyPlexUser
 from plexapi.exceptions import BadRequest, Unauthorized
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.schema import Table, Column
-from sqlalchemy.types import String, Integer
+from sqlalchemy.types import Integer, String, Text
 from sqlalchemy.engine.url import URL
 from sqlalchemy.orm import sessionmaker, mapper
 from sqlalchemy.exc import SQLAlchemyError
 
 
 class MediaItem(object):
-    def __init__(self, title='', summary='', art='', server='', server_id='', key='', type='', link=''):
+    def __init__(self, title='', summary='', art='', server='', server_id='', server_path='', type='', link=''):
         self.title = title
         self.summary = summary
         self.art = art
         self.server = server
         self.server_id = server_id
-        self.key = key
+        self.server_path = server_path
         self.type = type
         self.link = link
 
@@ -55,15 +55,16 @@ class PlexSearch:
         self.db_metadata = MetaData()
         media_table = Table(self.db_table, self.db_metadata,
                             Column('id', Integer, primary_key=True),
-                            Column('title', String, index=True),
-                            Column('summary', String),
-                            Column('art', String),
-                            Column('server', String),
-                            Column('server_id', String),
-                            Column('key', String),
-                            Column('type', String),
-                            Column('link', String),
-                            mysql_engine='MyISAM'
+                            Column('title', String(255), index=True),
+                            Column('summary', Text),
+                            Column('art', String(255)),
+                            Column('server', String(64)),
+                            Column('server_id', String(40)),
+                            Column('server_path', String(50)),
+                            Column('type', String(10)),
+                            Column('link', String(255)),
+                            mysql_engine='MyISAM',
+                            mysql_charset='utf8'
                             )
 
         # Drop the table, then create it again
@@ -83,13 +84,9 @@ class PlexSearch:
         :return: SQLAlchemy Database Engine
         """
         try:
-            engine = create_engine(URL(
-                self.db_driver,
-                username=self.db_user,
-                password=self.db_password,
-                host=self.db_host,
-                database=self.db_name
-            ))
+            engine = create_engine(
+                "{}://{}:{}@{}/{}?charset=utf8".format(self.db_driver, self.db_user, self.db_password, self.db_host,
+                                                       self.db_name))
 
             # Test the connection
             connection = engine.connect()
@@ -164,7 +161,7 @@ class PlexSearch:
                                 art=instance.url(item.art) if item.art else '',
                                 server=instance.friendlyName,
                                 server_id=instance.machineIdentifier,
-                                key=str(item.key),
+                                server_path=str(item.key),
                                 type=item.TYPE,
                                 link=item.getStreamUrl() if type(item) is plexapi.video.Movie else ''
                             )
