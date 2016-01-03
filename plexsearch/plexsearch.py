@@ -30,15 +30,15 @@ class PlexSearch:
     def __init__(self, config):
         try:
             # Copy the passed config into this instance of the object, checking to make sure we have everything
-            self.plex_user = config['plex']['user']
-            self.plex_password = config['plex']['password']
-            self.db_driver = config['database']['driver']
-            self.db_host = config['database']['host']
-            self.db_user = config['database']['user']
-            self.db_password = config['database']['password']
-            self.db_name = config['database']['name']
-            self.db_table = config['database']['table']
-        except IndexError as error:
+            self.plex_user = config.get('plex', 'user')
+            self.plex_password = config.get('plex', 'password')
+            self.db_driver = config.get('database', 'driver')
+            self.db_host = config.get('database', 'host')
+            self.db_user = config.get('database', 'user')
+            self.db_password = config.get('database', 'password')
+            self.db_name = config.get('database', 'name')
+            self.db_table = config.get('database', 'table')
+        except configparser.Error as error:
             sys.exit("Invalid configuration: " + str(error))
 
         # Connect to the Plex API
@@ -209,7 +209,7 @@ def main():
     args = parser.parse_args()
     try:
         with open(args.config_file) as config_file:
-            config = configparser.ConfigParser()
+            config = configparser.RawConfigParser()
             config.read_file(config_file)
     except (OSError, configparser.Error) as e:
         sys.exit("Unable to load configuration file: " + str(e))
