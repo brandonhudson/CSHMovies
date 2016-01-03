@@ -166,7 +166,7 @@ class PlexSearch:
                                 art=instance.url(item.art) if item.art else '',
                                 server=instance.friendlyName,
                                 server_id=instance.machineIdentifier,
-                                server_path=str(item.key),
+                                server_path=str(item.key).replace('/children', ''),
                                 type=item.TYPE,
                                 link=item.getStreamUrl() if type(item) is plexapi.video.Movie else ''
                             )

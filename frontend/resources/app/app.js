@@ -71,7 +71,7 @@ app.controller('searchController', function ($scope, $http, $sce) {
         if ((window.innerWidth < 768)) {
             newUrl = 'plexapp://';
         } else {
-            newUrl = 'https://app.plex.tv/web/app#!/server/' + movie.server_id + '/details/' + encodeURIComponent(movie.server_path.replace('/children', ''));
+            newUrl = 'https://app.plex.tv/web/app#!/server/' + movie.server_id + '/details/' + encodeURIComponent(movie.server_path);
         }
         document.location.href = newUrl;
     };
