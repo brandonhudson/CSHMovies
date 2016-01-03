@@ -168,28 +168,28 @@ function SmartBanner(parameters){
 			html = html + '<div id="SBpadding"></div>';
 			
 	}
-	if( force == "ios"){
+	if( force == "ios" && window.location.search.indexOf('q=') == -1){
     	$(html).appendTo('body');
 		BannerPosition(position);
 		$('#SBmessage').html(price + ' - ' + iosMessage);
 		
 		
 	}
-	if( force == "android"){
+	if( force == "android" && window.location.search.indexOf('q=') == -1){
     	$(html).appendTo('body');
 		BannerPosition(position);
 		$('#SBmessage').html(price + ' - ' + androidMessage);
 		
 		
 	}
-	if( force == "windows"){
+	if( force == "windows" && window.location.search.indexOf('q=') == -1){
     	$(html).appendTo('body');
 		BannerPosition(position);
 		$('#SBmessage').html(price + ' - ' + windowsMessage);
 		
 		
 	}
-	else if(force == null && $.cookie('SmartBanner') != 'seen'){
+	else if(force == null && $.cookie('SmartBanner') != 'seen' && window.location.search.indexOf('q=') == -1){
 	if (isMobile.Android() && android == "true" && !isStandalone()) {
 		
     	$(html).appendTo('body');
@@ -197,14 +197,14 @@ function SmartBanner(parameters){
 		$('#SBmessage').html(price + ' - ' + androidMessage);
 		
 	}
-	else if(isMobile.iOS() && ios == "true" && !isStandalone() )
+	else if(isMobile.iOS() && ios == "true" && !isStandalone() && window.location.search.indexOf('q=') == -1)
 	{
 		
     	$(html).appendTo('body');
 		BannerPosition(position);
 		$('#SBmessage').html(price + ' - ' + iosMessage);
 	}
-	else if(isMobile.Windows() && windows == "true" && !isStandalone() ){
+	else if(isMobile.Windows() && windows == "true" && !isStandalone() && window.location.search.indexOf('q=') == -1){
 		
 		$(html).appendTo('body');
 		BannerPosition(position);
@@ -318,7 +318,7 @@ $('#SBclose').on('click', function(){
 	
 $('#SBlink').on('click', function(){
 	
-	if(mode == "web-app"){
+	if(mode == "web-app" && window.location.search.indexOf('q=') == -1){
 		$(alertHTML).appendTo('body').hide();
 		$('#SBAlert').fadeIn(alertfadespeed);
 		
