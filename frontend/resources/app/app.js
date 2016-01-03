@@ -115,6 +115,7 @@ app.controller('searchController', function($scope,$http,$sce) {
     }
     $scope.init = function () {
         if(window.location.search.indexOf('q=') > -1 && getUrlParameter('q') != "" && getUrlParameter('q') != null){
+            $('.zone-loading').removeClass('hidden');
             $("#SmartBanner").css("display","none");
             $('.resultsContainer').show();
             var query = getUrlParameter('q');
@@ -123,6 +124,7 @@ app.controller('searchController', function($scope,$http,$sce) {
             $scope.userQuery = query;
             $http.get('resources/api/api.php?query='+query)
         .success(function(data, status, headers, config) {   
+            $('.zone-loading').addClass('hidden');
             switchView();
             console.log(data) //debug
             $scope.data = data;

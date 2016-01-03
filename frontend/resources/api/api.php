@@ -18,7 +18,7 @@ if(isset($_GET['query'])){
     die('error - q not set');
 }
 
-$query = "SELECT * FROM movieList WHERE MATCH (title) AGAINST ('$search') LIMIT 1000";
+$query = "SELECT * FROM movieList WHERE MATCH (title) AGAINST ('$search') LIMIT 400";
 
     
 
@@ -38,9 +38,16 @@ if($result->num_rows > 0) {
         // Check to see if already in array
         for ($i = 0; $i < count($arr); ++$i) {
             if($arr[$i]['title'] == $title){
-                $arr[$i]['server'] = $arr[$i]['server'].", ".$tempRow['server'];
-                $inArray = true;
-                break;
+                if (strpos($arr[$i]['server'],$tempRow['server']) !== false) {
+                     $inArray = true;
+                }
+                else{
+                    $arr[$i]['server'] = $arr[$i]['server'].", ".$tempRow['server'];
+                    $inArray = true;
+                    break;
+                    
+                }
+                
             }
         }
 
