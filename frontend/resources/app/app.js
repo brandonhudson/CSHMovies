@@ -47,7 +47,7 @@ app.controller('searchController', function($scope,$http,$sce) {
     }
     
     $scope.location = function(){
-        console.log("test of location function"); //debug
+        //console.log("test of location function"); //debug
         if ((window.innerWidth < 768))  {
             newUrl='plexapp://';
             
