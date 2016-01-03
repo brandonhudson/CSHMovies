@@ -45,6 +45,32 @@
         float:right;
         
     }
+    .movie-poster-link{
+        transition:all .1s ease-in;
+        -webkit-transition:all .1s ease-in;
+        -moz-transition:all .1s ease-in;
+        -o-transition:all .1s ease-in;
+        -ms-transition:all .1s ease-in;
+        cursor:pointer;
+    }
+    .movie-poster-link:hover:before {
+        position: absolute;
+        top:10px;
+        content: '';
+        background-color: rgba(0,0,0, 0.5);
+        background-image: url('../images/plex_logo_poster.png');
+        background-size: 70px 106px;
+        background-repeat: no-repeat;
+        width:70px;
+        height:106px;
+        pointer-events: none;
+        transition:all .1s ease-in;
+        -webkit-transition:all .1s ease-in;
+        -moz-transition:all .1s ease-in;
+        -o-transition:all .1s ease-in;
+        -ms-transition:all .1s ease-in;
+        
+    }
     .movie-title{
         font-size:20px;
         padding-top:4px;
@@ -106,8 +132,38 @@
         margin-right:10px;
         margin-top:15px;
         margin-bottom:15px;
+        transition:all .1s ease-in;
+        -webkit-transition:all .1s ease-in;
+        -moz-transition:all .1s ease-in;
+        -o-transition:all .1s ease-in;
+        -ms-transition:all .1s ease-in;
         
         
+    }
+    .movie-poster-link{
+        transition:all .1s ease-in;
+        -webkit-transition:all .1s ease-in;
+        -moz-transition:all .1s ease-in;
+        -o-transition:all .1s ease-in;
+        -ms-transition:all .1s ease-in;
+        cursor:pointer;
+    }
+    .movie-poster-link:hover:before {
+        position: absolute;
+        top:15px;
+        content: '';
+        background-color: rgba(0,0,0, 0.5);
+        background-image: url('../images/plex_logo_poster.png');
+        background-size: 100px 152px;
+        background-repeat: no-repeat;
+        width:100px;
+        height:152px;
+        pointer-events: none;
+        transition:all .1s ease-in;
+        -webkit-transition:all .1s ease-in;
+        -moz-transition:all .1s ease-in;
+        -o-transition:all .1s ease-in;
+        -ms-transition:all .1s ease-in;
     }
     .movie-title{
         font-size:32px;
