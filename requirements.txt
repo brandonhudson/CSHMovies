@@ -1,0 +1,3 @@
+plexapi
+sqlalchemy
+PyMySql

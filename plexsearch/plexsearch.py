@@ -1,123 +1,240 @@
-from __future__ import print_function
-from plexapi.server import PlexServer
-from plexapi.myplex import MyPlexUser
-from plexapi.exceptions import NotFound
-import plexapi.video
-import json
 import sys
-import MySQLdb as mdb
+import argparse
+import configparser
+from distutils.util import strtobool
+from datetime import datetime, timedelta
+import plexapi.video
+from plexapi.myplex import MyPlexUser
+from plexapi.exceptions import BadRequest, Unauthorized
+from sqlalchemy import create_engine, MetaData
+from sqlalchemy.schema import Table, Column
+from sqlalchemy.types import String, Integer
+from sqlalchemy.engine.url import URL
+from sqlalchemy.orm import sessionmaker, mapper
+from sqlalchemy.exc import SQLAlchemyError
 
-db_conn = None
-json_config = None
-with open(sys.argv[1]) as data_file:
-    json_config = json.load(data_file)
 
-def return_movie_db():
-    movie_data = []
+class MediaItem(object):
+    def __init__(self, title='', summary='', art='', server='', server_id='', key='', type='', link=''):
+        self.title = title
+        self.summary = summary
+        self.art = art
+        self.server = server
+        self.server_id = server_id
+        self.key = key
+        self.type = type
+        self.link = link
 
-    user = MyPlexUser.signin(
-            json_config['plex']['user'],
-            json_config['plex']['password']
-            )
 
-    servers = user.resources()
-
-    db_conn = None
-    for server in servers:
-        print("Connecting to: " + unicode(server.name).encode('utf-8'))
+class PlexSearch:
+    def __init__(self, config):
         try:
-            instance = server.connect()
+            # Copy the passed config into this instance of the object, checking to make sure we have everything
+            self.plex_user = config['plex']['user']
+            self.plex_password = config['plex']['password']
+            self.db_driver = config['database']['driver']
+            self.db_host = config['database']['host']
+            self.db_user = config['database']['user']
+            self.db_password = config['database']['password']
+            self.db_name = config['database']['name']
+            self.db_table = config['database']['table']
+        except IndexError as error:
+            sys.exit("Invalid configuration: " + str(error))
 
-            for section in instance.library.sections():
-                for movie in section.all():
-                    link = None
-                    if type(movie) is plexapi.video.Movie:
-                        link = unicode(movie.getStreamUrl()).encode('utf-8')
-                    else:
-                        link = ""
+        # Connect to the Plex API
+        print("Connecting to the Plex API... ", end='')
+        self.plex = self._connect_plex()
+        print("done!")
 
-                    movie_data.append({
-                        "title": unicode(movie.title).encode('utf-8'),
-                        "summary": unicode(movie.summary).encode('utf-8'),
-                        "art": instance.url(unicode(movie.art).encode('utf-8')),
-                        "server":unicode(instance.friendlyName).encode('utf-8'),
-                        "type": unicode(type(movie)).encode('utf-8'),
-                        "link": link
-                        })
-        except Exception:
-            print("Couldn't connect to: " + unicode(server.name).encode('utf-8'))
+        # Connect to the database
+        print("Connecting to the database... ", end='')
+        self.db = self._connect_db()
+        print("done!")
 
-    return movie_data
+        # Define the database model
+        self.db_metadata = MetaData()
+        media_table = Table(self.db_table, self.db_metadata,
+                            Column('id', Integer, primary_key=True),
+                            Column('title', String, index=True),
+                            Column('summary', String),
+                            Column('art', String),
+                            Column('server', String),
+                            Column('server_id', String),
+                            Column('key', String),
+                            Column('type', String),
+                            Column('link', String),
+                            mysql_engine='MyISAM'
+                            )
 
-def connect_db():
-    return mdb.connect(**json_config['mysql'])
+        # Drop the table, then create it again
+        self._drop_table()
+        self._create_table()
 
-def query_2(cursor, sql):
-    global db_conn
-    db_conn.ping(True)
-    try:
-        cursor.execute(sql)
-    except Exception:
-        db_conn = connect_db()
-        cursor.execute(sql)
+        # Map the database onto the MediaItem class
+        mapper(MediaItem, media_table)
 
-def query_3(cursor, sql, params):
-    global db_conn
-    db_conn.ping(True)
-    try:
-        cursor.execute(sql, params)
-    except Exception:
-        db_conn = connect_db()
-        cursor.execute(sql, params)
+        # Create a new database session
+        session = sessionmaker(bind=self.db)
+        self.db_session = session()
 
-def create_database():
-    global db_conn
-    db_conn = connect_db()
-    c = db_conn.cursor()
+    def _connect_db(self):
+        """
+        Attempts to connect to the database and returns the resulting connection object
+        :return: SQLAlchemy Database Engine
+        """
+        try:
+            engine = create_engine(URL(
+                self.db_driver,
+                username=self.db_user,
+                password=self.db_password,
+                host=self.db_host,
+                database=self.db_name
+            ))
 
-    query_2(c, '''create table movieList
-(rowid INT NOT NULL AUTO_INCREMENT PRIMARY KEY, title text, summary text, art
-text, server text, type text, link text)''')
+            # Test the connection
+            connection = engine.connect()
+            if connection:
+                connection.close()
+                return engine
+        except SQLAlchemyError as error:
+            sys.exit("Unable to connect to the database: " + str(error))
 
-    query_2(c, '''ALTER TABLE movieList ENGINE = MYISAM''')
+    def _connect_plex(self):
+        """
+        Attempts to authenticate to the Plex API and returns the resulting MyPlexUser object
+        :return: plexapi.MyPlexUser
+        """
+        try:
+            return MyPlexUser.signin(self.plex_user, self.plex_password)
+        except (Unauthorized, BadRequest) as error:
+            sys.exit("Failed to authenticate to the Plex API: " + str(error))
 
-    query_2(c, '''ALTER TABLE movieList ADD FULLTEXT(title)''')
+    def _create_table(self):
+        """
+        Creates the media items table in the connected database
+        :return: None
+        """
+        self.db_metadata.create_all(self.db)
 
-    db_conn.commit()
+    def _drop_table(self):
+        """
+        Deletes/drops the media items table in the connected database
+        :return: None
+        """
+        self.db_metadata.drop_all(self.db)
 
-    c.close()
+    @staticmethod
+    def _clean_unicode(msg):
+        """
+        Windows doesn't always have the correct fonts for outputting Unicode characters,
+        so this encode/decode chain prevents the application from crashing when printing them.
+        :param msg: String to process
+        :return: Printable string
+        """
+        return msg.encode('utf-8', errors='ignore').decode('cp437', errors='ignore')
 
-def clear_database():
-    global db_conn
-    db_conn = connect_db()
-    c = db_conn.cursor()
+    def update_database(self):
+        """
+        Uses the Plex API to log in as the configured user, then connect to each server
+        the user has access to and download a list of all available media.
+        :return: None
+        """
+        now = datetime.utcnow()
 
-    query_2(c, '''drop table movieList''')
+        # Iterate over the list of servers the user has access to
+        for server in self.plex.resources():
+            # Only try to connect to servers that have checked in within the past 24 hours
+            if server.provides == 'server' and (now - server.lastSeenAt) < timedelta(1):
+                # Log the connection attempt (that encode/decode chain works around Windows not having the right fonts)
+                print("Downloading metadata from: " + self._clean_unicode(server.name))
 
-    db_conn.commit()
+                try:
+                    # Attempt to connect to the server
+                    instance = server.connect()
 
-    c.close()
+                    # Once connected, iterate over the list of available library sections
+                    for section in instance.library.sections():
+                        # Iterate over each item in the section
+                        for item in section.all():
+                            # Create a new MediaItem object with the item's metadata
+                            # noinspection PyArgumentList
+                            media_item = MediaItem(
+                                title=item.title,
+                                summary=item.summary,
+                                art=instance.url(item.art) if item.art else '',
+                                server=instance.friendlyName,
+                                server_id=instance.machineIdentifier,
+                                key=str(item.key),
+                                type=item.TYPE,
+                                link=item.getStreamUrl() if type(item) is plexapi.video.Movie else ''
+                            )
 
-def populate_database():
-    global db_conn
-    db_conn = connect_db()
-    c = db_conn.cursor()
+                            # Add the object to the database session
+                            self.db_session.add(media_item)
+                except Exception as error:
+                    # If we couldn't connect, log the error and continue
+                    print("Couldn't connect to " + self._clean_unicode(server.name) + ": " + str(error))
 
-    movie_data = return_movie_db()
+        # Flush the database session (commits everything to the database)
+        self.db_session.commit()
 
-    for movie in movie_data:
-        query_3(c, '''insert into movieList (title, summary, art, server, type,
-link)
-values (%s, %s, %s, %s, %s, %s)''', (movie['title'], movie['summary'],
-            movie['art'], movie['server'], movie['type'], movie['link']))
-
-    db_conn.commit()
-    c.close()
-
-    print("Completed Upload Successfully")
 
 def main():
-    print(json.dumps(return_movie_db(), indent=4), file=sys.stderr)
+    """
+    Attempts to load the configuration from the file specified in the first argument,
+    then creates an instance of PlexSearch and populates the database.
+    :return: None
+    """
+    # Configure the argument parser
+    parser = argparse.ArgumentParser(
+        description='Download all of the metadata for the media a Plex user has access to and store it in a database.'
+    )
+
+    parser.add_argument(
+        'config_file',
+        type=str,
+        help='configuration file containing Plex credentials and database connection information'
+    )
+
+    parser.add_argument(
+        '--no-confirm',
+        action='store_true',
+        default=False,
+        help='disable the confirmation prompt prior to destructively updating the database'
+    )
+
+    # Parse arguments
+    args = parser.parse_args()
+    try:
+        with open(args.config_file) as config_file:
+            config = configparser.ConfigParser()
+            config.read_file(config_file)
+    except (OSError, configparser.Error) as e:
+        sys.exit("Unable to load configuration file: " + str(e))
+
+    # Create a new PlexSearch object
+    search = PlexSearch(config)
+
+    # Ask the user before we refresh the database
+    if not args.no_confirm:
+        while True:
+            input_confirm = input('Are you sure you want to update the database? [y/N] ')
+            try:
+                if input_confirm == '' or not strtobool(input_confirm):
+                    sys.exit('Cancelling.')
+                break
+            except ValueError:
+                print("Please enter a valid choice.")
+
+    # Tell the user we're updating the table
+    print("Updating the media database, this might take some time...")
+
+    # Update the database
+    search.update_database()
+
+    # Tell the user we're done
+    print("Database updated.")
+
 
 if __name__ == '__main__':
     main()

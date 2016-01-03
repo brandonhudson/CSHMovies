@@ -62,5 +62,9 @@ target/
 AUTHORS
 ChangeLog
 
+# Configuration
 frontend/resources/api/keys.php
+plexsearch.ini
 
+# IDE Workspaces
+.idea
