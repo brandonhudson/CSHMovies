@@ -55,7 +55,7 @@ class PlexSearch:
         self.db_metadata = MetaData()
         media_table = Table(self.db_table, self.db_metadata,
                             Column('id', Integer, primary_key=True),
-                            Column('title', String(255), index=True),
+                            Column('title', String(255)),
                             Column('summary', Text),
                             Column('art', String(255)),
                             Column('server', String(64)),
@@ -78,6 +78,8 @@ class PlexSearch:
         session = sessionmaker(bind=self.db)
         self.db_session = session()
 
+        self.db_session.execute('ALTER TABLE movieList ADD FULLTEXT(title)')
+        self.db_session.commit()
     def _connect_db(self):
         """
         Attempts to connect to the database and returns the resulting connection object
