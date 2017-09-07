@@ -20,11 +20,6 @@
     <link rel="apple-touch-icon" sizes="167x167" href="resources/images/icons/apple-touch-icon-167x167.png">
     <link rel="apple-touch-icon" sizes="180x180" href="resources/images/icons/apple-touch-icon-180x180.png">
     <link rel="shortcut icon" sizes="196x196" href="resources/images/icons/apple-touch-icon-196x196.png">
-      
-
-    
-    
-
 
     <title>CSH Movies</title>
 
@@ -74,7 +69,7 @@
             <!-- add search form -->
             <form role="search" ng-submit="searchMovie()">
                 <div class="input-group nav-search-container">
-                    <input type="text" class="form-control nav-search-input" name="searchinput" placeholder="Search for..." ng-model="userQuery">
+                    <input type="text" class="form-control nav-search-input clearable" name="searchinput" placeholder="Search for..." ng-model="userQuery">
                     <span class="input-group-btn">
                         <button class="btn btn-default search-btn" type="submit" ng-click="searchMovie(userQuery)">Go</button>
                     </span>
@@ -171,7 +166,7 @@
             </div>
             <form name="search" ng-submit="searchMovie()">
                 <div class="input-group">
-                    <input type="text" ng-model="userQuery" class="form-control search-input" name="searchinput" placeholder="Search for..." >
+                    <input type="text" ng-model="userQuery" class="form-control search-input clearable" name="searchinput" placeholder="Search for..." >
                     <span class="input-group-btn">
                         <button class="btn btn-default search-btn" type="submit">Go</button>
                     </span>
@@ -187,10 +182,10 @@
                 <a href="https://github.com/brandonhudson/CSHMovies" style="color:#999;"><i class="fa fa-github"></i> Find Us on GitHub</a>
             </div>
             <div class="col-xs-12 col-sm-4 col-md-4 footer-container mobile-hide">
-                Version 1.0 BETA
+                
             </div>
             <div class="col-xs-12 col-sm-4 col-md-4 footer-container">
-                &copy; 2015 Computer Science House.
+                &copy; 2017 Brandon Hudson
             </div>
         
         </div>

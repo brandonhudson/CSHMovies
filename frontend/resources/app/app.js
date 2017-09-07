@@ -1,3 +1,19 @@
+
+/**
+* Toggles the clear input button
+**/
+function tog(v){return v?'addClass':'removeClass';} 
+$(document).on('input', '.clearable', function(){
+    $(this)[tog(this.value)]('x');
+}).on('mousemove', '.x', function( e ){
+    $(this)[tog(this.offsetWidth-18 < e.clientX-this.getBoundingClientRect().left)]('onX');
+}).on('touchstart click', '.onX', function( ev ){
+    ev.preventDefault();
+    $(this).removeClass('x onX').val('').change();
+});
+
+
+
 /**
  * Switches view to display results
  * Params: None
@@ -99,7 +115,8 @@ app.controller('searchController', function ($scope, $http, $sce) {
         if ((window.innerWidth < 768)) {
             newUrl = 'plexapp://';
         } else {
-            newUrl = 'https://app.plex.tv/web/app#!/server/' + movie.server_id + '/details/' + encodeURIComponent(movie.server_path);
+            newUrl = 'https://app.plex.tv/desktop#!/server/' + movie.server_id + '/details?key=' + encodeURIComponent(movie.server_path);
+            searchUrl = "https://app.plex.tv/desktop#!/search/"+encodeURIComponent(movie.title); //URL for all available copies of this
         }
         document.location.href = newUrl;
     };
@@ -116,6 +133,7 @@ app.controller('searchController', function ($scope, $http, $sce) {
             $http.get('resources/api/api.php?query=' + query)
                 .success(function (data, status, headers, config) {
                     $('.zone-loading').addClass('hidden');
+                $('.clearable').trigger("input");
                     switchView();
                     console.log(data) //debug
                     $scope.data = data;

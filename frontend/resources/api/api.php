@@ -72,6 +72,11 @@ if ($result->num_rows > 0) {
                 $tempRow['art'] = $imageBaseURL . $art;
 
             }
+
+            // Replace all non-UTF8 characters from the summary
+            // This often happens in Plex
+            $tempRow['summary'] = iconv("UTF-8", "UTF-8//IGNORE", $tempRow['summary']);
+
             $arr[] = $tempRow;
         }
     }
